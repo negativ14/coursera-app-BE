@@ -3,9 +3,8 @@ const db = require("../db.js");
 const { z } = require("zod");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { JWT_ADMINSECRET } = require("..config.js");
-const middleware = require("../middleware/adminMiddleware.js");
-const adminMiddleware = middleware.adminMiddleware;
+const { JWT_ADMINSECRET } = require("../config");
+const {adminMiddleware} = require("../middleware/adminMiddleware.js");
 
 const AdminModel = db.AdminModel;
 const CourseModel = db.CourseModel;
@@ -124,7 +123,7 @@ adminRouter.delete('/delete-courses', adminMiddleware, async (req, res) => {
         const adminId = req._id;
         const { courseId } = req.body;
 
-        const isPresent = await CourseModel.findOne({ courseId : courseId });
+        const isPresent = await CourseModel.findOne({ _id : courseId });
 
         if(isPresent){
             const result = await CourseModel.deleteOne({
@@ -168,7 +167,7 @@ adminRouter.put('/update-courses', adminMiddleware, async (req, res) => {
         //     }
         // );
 
-        const  isPresent = await CourseModel.findOne({ courseId : courseId });
+        const isPresent = await CourseModel.findOne({ _id : courseId });
 
         if(isPresent){
             const updateFields = {};

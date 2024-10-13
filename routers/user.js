@@ -1,14 +1,12 @@
 const express = require("express");
-const db = require("..db.js");
 const { z } = require("zod");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { JWT_USERSECRET } = require("..config.js");
-const middleware = require("../middleware/userMiddleware.js");
-const { userMiddleware } = middleware;
+const { JWT_USERSECRET } = require("../config");
+const { userMiddleware } = require("../middleware/userMiddleware");
 
-const { UserModel } = db;
-const { PurchaseModel } = db
+const { UserModel } = require("../db");
+const { PurchaseModel } = require("../db");
 
 const userRouter = express.Router();
 
@@ -81,10 +79,10 @@ userRouter.post('/signin', async (req, res) => {
                 });
             }
 
-            const hashedPassword = await bcrypt.compare(password, user.password);
+            const passwordMatches = await bcrypt.compare(password, user.password);
 
-            if (hashedPassword) {
-                const token = jwt.sign({ _id: user._id.toString() }, JWT_USERSECRET);
+            if (passwordMatches) {
+                const token = jwt.sign({ _id : user._id.toString() }, JWT_USERSECRET);
 
                 return res.json({
                     message: "User Signed In successfully",
@@ -116,7 +114,7 @@ userRouter.get('/my-courses', userMiddleware, async (req, res) => {
         const courses = await PurchaseModel.find({ userId : userId });
 
         if(courses.length === 0){
-            return res.json({
+            return res.status(204).json({
                 message : "Courses not purchased yet"
             })
         }
@@ -132,4 +130,4 @@ userRouter.get('/my-courses', userMiddleware, async (req, res) => {
 });
 
 
-module.exports = { userRouter };
+module.exports = {userRouter};

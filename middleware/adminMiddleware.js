@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { JWT_ADMINSECRET } = require("..config.js");
-
+const { JWT_ADMINSECRET} = require("../config")
 
 function adminMiddleware(req, res, next) {
     const token = req.headers.authorization;

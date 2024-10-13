@@ -1,6 +1,6 @@
 const express = require("express");
-const { CourseModel } = require("..db");
-const { PurchaseModel } = require("..db");
+const { CourseModel } = require("../db");
+const { PurchaseModel } = require("../db");
 const { userMiddleware } = require("../middleware/userMiddleware.js");
 
 const courseRouter = express.Router(); 
@@ -12,7 +12,7 @@ courseRouter.post('/purchase', userMiddleware, async(req, res) => {
 
         const alreadyPurchased = await PurchaseModel.find({courseId : courseId, userId : userId})
 
-        if(alreadyPurchased){
+        if(alreadyPurchased > 0){
             return res.status(409).json({
                 message : "You already have this Course"
             })
